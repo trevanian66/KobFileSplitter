@@ -11,6 +11,7 @@ import fnmatch
 import math
 from shlex import join
 import string
+from tkinter import CURRENT
 
 
 #helper objects
@@ -33,6 +34,7 @@ def split_file(file_data):
     chunk_file_prefix = ""
     bytes_read = 0
     bytes_to_read = 0
+    bytes_left = 0
     
     
     if not input_file.is_file():
@@ -73,9 +75,8 @@ def split_file(file_data):
             if bytes_left < READ_BUFFER_SIZE:
                 bytes_to_read =  int(bytes_left)
             else:
-                bytes_to_read = int(READ_BUFFER_SIZE)
-            
-            print(f'reading {bytes_to_read} bytes')     
+                bytes_to_read = int(READ_BUFFER_SIZE)           
+       
             read_buffer = file.read(bytes_to_read)
             
             if (bytes_read + bytes_to_read > file_data.chunk_size) or bytes_read == 0:
@@ -95,7 +96,75 @@ def split_file(file_data):
         result = False
         raise
         
+def merge_file(file_data):        
+   
+    result = True
+    bytes_to_read = 0
+    bytes_left = 0
+    output_file = Path(file_data.file_name)
+    file_mask = "*" + SPLIT_FILE_SUFFIX + "*"
+    
+    if output_file.is_file():
+       raise ValueError(f'file {output_file} already exists.')
+   
+    input_directory = Path(file_data.source)
+    if not input_directory.is_dir():
+         raise ValueError(f'Directory {input_directory} does not exist.')
+   
+   
+    file_names = fnmatch.filter(os.listdir(input_directory),file_mask)
         
+    if len(file_names) == 0:
+            raise ValueError(f'no files matching {file_mask} in directory {input_directory}')
+    else:
+         # check if we have more than one set of split files in merge folder 
+         file_name = Path(file_names[0]).stem
+         f = filter(lambda l: Path(l).stem != file_name, file_names )
+         fl = list(f)
+         if len(fl) > 0:
+             raise ValueError(f'there are more than one set of split files in directory {input_directory}')
+         
+         file_names.sort()
+         
+         try:
+             print(f'creating {file_data.file_name}...')
+             
+             foutput = open(file_data.file_name,'wb') 
+
+             for current_file in file_names:
+                
+                current_file = os.path.join(input_directory,current_file)
+                
+                print(f'reading {current_file}...')    
+                
+                file_size = os.path.getsize(current_file)
+                file = open(current_file,'rb') 
+                read_position = file.tell()
+                
+                while read_position != file_size:
+                    
+                    bytes_left = file_size - read_position           
+                
+                    if bytes_left < READ_BUFFER_SIZE:
+                       bytes_to_read =  int(bytes_left)
+                    else:
+                       bytes_to_read = int(READ_BUFFER_SIZE)
+
+                    read_buffer = file.read(bytes_to_read)
+                    foutput.write(read_buffer)
+                    
+                    read_position = file.tell()
+                    
+                file.close()    
+             
+             foutput.close()   
+
+         except:
+             raise
+         
+
+   
+    
    
 
 def write_chunk(write_buffer,file_name):
@@ -118,8 +187,9 @@ def write_chunk(write_buffer,file_name):
 
 
 file_op = file_operation.Split
-file_data = file_ops_data(file_op,'d:\jessiej.mp4','','d:\ktest',204800)
-split_file(file_data)
+file_data = file_ops_data(file_op,'d:\Angelique2.mp4','d:\ktest','d:\ktest',204800)
+#split_file(file_data)
+merge_file(file_data)
 
 
     
