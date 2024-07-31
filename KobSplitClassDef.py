@@ -60,8 +60,7 @@ class KobSplit:
             chunk_file_prefix = "0" *  (int(math.log10(chunk_number)) + 1)
             if len(chunk_file_prefix) < 2:
                 chunk_file_prefix = "00"
-        
-            print (f'we have {chunk_number} chunks babe. prefix is {chunk_file_prefix}')        
+                       
         
             bytes_read = 0  #initialize bytes read
         
@@ -112,6 +111,11 @@ class KobSplit:
         if not input_directory.is_dir():
              raise ValueError(f'Directory {input_directory} does not exist.')
    
+        #create output directory if needed
+        directory =  os.path.dirname(output_file_name) 
+        output_directory = Path(directory)
+        if not output_directory.is_dir():
+                 os.makedirs(directory)  
    
         file_names = fnmatch.filter(os.listdir(input_directory),file_mask)
         
@@ -190,7 +194,7 @@ class KobSplit:
        result = -1
 
        try:           
-           if size_string.isdigit():
+           if str(size_string).isdigit():
                result = int(size_string)
            else:               
                size_string = size_string.lower()
