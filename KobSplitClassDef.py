@@ -1,15 +1,19 @@
+# -------------------------------------------------------------------------------------------------------------------------------------------
+#  Class		: KobSplit 
+#  Copyright	: © KobbySoft Ltd
+#  Description	: File splitter and merge program
+#  Author       : Kobby Awadzi
+#  History      : July 2024 - Created.
+#  Notes:       : Splits and merges files
+# --------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
-from collections import namedtuple
-from enum import Enum
 from pathlib import Path
 import os
 import fnmatch
 import math
-from shlex import join
-import string
-from tkinter import CURRENT
+
 
 
 #constants
@@ -18,9 +22,13 @@ SPLIT_FILE_SUFFIX = ".KOB";
 DEFAULT_READ_BUFFER_SIZE = 1024 * 10;
 
 class KobSplit:
+
+    log_to_screen = False
+    _files_created = 0
+
     
     def __init__(self,buffer_size = DEFAULT_READ_BUFFER_SIZE  ):        
-        self.read_buffer_size = self.__get_size_value(buffer_size)
+        self.read_buffer_size = self.__get_size_value(buffer_size)                
         pass
     
     def split_file(self,input_file_name,destination,file_chunk_size = MIN_CHUNK_SIZE):
@@ -81,9 +89,8 @@ class KobSplit:
                 if (bytes_read + bytes_to_read > chunk_size) or bytes_read == 0:
                    chunk_count = chunk_count  + 1 
                    current_chunk_file = os.path.join(destination,file_name + SPLIT_FILE_SUFFIX + str(chunk_count).rjust(len(chunk_file_prefix),"0"))
-                   bytes_read = 0
-                   print (f'creating {current_chunk_file}...') 
-               
+                   bytes_read = 0                  
+                               
                 self.__write_chunk(read_buffer,current_chunk_file)            
                 
                 bytes_read = bytes_read + bytes_to_read
@@ -91,6 +98,7 @@ class KobSplit:
                 read_position = file.tell()
             
             file.close()
+            if self.log_to_screen: print(f"finished. {self._files_created} files created.")
         
         except:    
             result = False
@@ -132,7 +140,7 @@ class KobSplit:
              file_names.sort()
          
              try:
-                 print(f'creating {output_file_name}...')
+                 if self.log_to_screen: print(f'creating {output_file_name}...')
              
                  foutput = open(output_file_name,'wb') 
 
@@ -140,7 +148,7 @@ class KobSplit:
                 
                     current_file = os.path.join(input_directory,current_file)
                 
-                    print(f'reading {current_file}...')    
+                    if self.log_to_screen: print(f'reading {current_file}...')    
                 
                     file_size = os.path.getsize(current_file)
                     file = open(current_file,'rb') 
@@ -163,6 +171,8 @@ class KobSplit:
                     file.close()    
              
                  foutput.close()   
+                 
+                 if self.log_to_screen: print(f"finished. [{output_file_name}] created.")
 
              except:
                  raise                       
@@ -174,6 +184,8 @@ class KobSplit:
         if output_file.is_file():
              file = open(file_name,'ab') 
         else:
+             if self.log_to_screen:   print (f'creating {file_name}...')  
+             self._files_created = self._files_created + 1
              directory =  os.path.dirname(file_name) 
              output_directory = Path(directory)
              if not output_directory.is_dir():
