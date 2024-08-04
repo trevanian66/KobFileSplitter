@@ -5,7 +5,7 @@
 #  Description	: Harness for KobSplit File splitter and merge class
 #  Author       : Kobby Awadzi
 #  History      : July 2024 - Created.
-#  Notes:       : Splits and merges files using command line options
+#  Notes:       : Splits and merges files from command line. Uses KobSplit class.
 # --------------------------------------------------------------------------------------------------------------------------------------------
 
 from KobSplit import KobSplit
@@ -66,7 +66,8 @@ def write_credits():
     print("-----------------------------------------------")
     print("Kobby's File Splitter v1.0 (c) KobbySoft 2024. ")
     print("-----------------------------------------------")
-        
+  
+    
 
 
 #main

@@ -4,7 +4,7 @@
 #  Description	: File splitter and merge program
 #  Author       : Kobby Awadzi
 #  History      : July 2024 - Created.
-#  Notes:       : Splits and merges files
+#  Notes:       : Splits files into specified chunk sizes. Merges chunks back together into one file.
 # --------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -106,6 +106,7 @@ class KobSplit:
         except:    
             result = False
             raise
+        
     # -------------------------------------------------------------------------------------
     # merge file routine
     # -------------------------------------------------------------------------------------    
