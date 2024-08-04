@@ -57,8 +57,8 @@ def validate_arguments(argv) -> {}:
 #help instructions        
 def write_usage():    
    print("USAGE:")
-   print("KobSplit Split -f <<sourcefile> -s <<chunksize>> -d <<destination directory>> -rb <<read buffer size>>.")
-   print("KobSplit Merge -d <<sourcedirectory> -f <<output file>> -rb <<read buffer size>>.")
+   print("KobFileSplit Split -f <<sourcefile> -s <<chunksize>> -d <<destination directory>> -rb <<read buffer size>>.")
+   print("KobFileSplit Merge -d <<sourcedirectory> -f <<output file>> -rb <<read buffer size>>.")
 
 
 #credits
