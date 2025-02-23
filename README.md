@@ -8,7 +8,7 @@ General Usage:
 Spltting:
 ` KobFileSplit Split -f [sourcefile] -s [chunksize] -d [destination directory] -rb [read buffer size] `
 
-  -f : soucce file to split including path  
+  -f : source file to split including path  
   -s : size of split files. Can be specified as a number of bytes or a number suffixed with "kb","mb" or "gb" for Kilo bytes, Mega bytes or Giga bytes respectively  
   -d : directory into which to place split files.  
   -rb: read buffer size. Determines how many bytes to read from file each time.
